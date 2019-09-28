@@ -6,7 +6,9 @@
     let intervalID, progressIntervalID;
 
     let triviaGame = {
-        
+
+        start: null,
+
         // Number of correctly answered quesitons.
         correct: 0,
 
@@ -136,6 +138,7 @@
         // On start button press, trivia quiz begins. 
         // Sets interval to time each question.
         startQuiz: function() {
+            triviaGame.start = $('#start');
             $('#start').remove();
             clearInterval(intervalID);
             triviaGame.displayQuestion();
@@ -144,7 +147,14 @@
 
         
         resetGame: function() {
-            alert('reset')
+            $('.jumbotron').empty();
+            $('.jumbotron').append(triviaGame.start);
+            $('#start').on('click', triviaGame.startQuiz);
+            triviaGame.questionsUsed = [];
+            triviaGame.correct = 0;
+            triviaGame.incorrect = 0;
+            $('#incorrect').text('0');
+            $('#correct').text('0');
         },
 
 
