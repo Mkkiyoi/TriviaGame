@@ -39,7 +39,12 @@
                          'Weezing and Arbok', 
                          'Lorelei, Bruno, Agatha, and, Lance'],
 
+        // Boolean flag for if a user chose an answer.
+        answerChosen: false,
+
         chooseAnswer: function(event) {
+
+            triviaGame.answerChosen = true;
             
             // Get the chosen answer.
             let answer = $(event.target).text();
@@ -69,21 +74,20 @@
                 // Prepend green check mark to the correct answer.
                 $(event.target).prepend('<i class="fas fa-check"></i> ');
 
-                // Increment incorrect by 1 and then display number of correct questions.
+                // Increment correct by 1 and then display number of correct questions.
                 $('#correct').text(++triviaGame.correct);
             }
 
             // Only allow player to choose one answer.
             $('.answer').off('click');
-
-            // Check if the quiz is over.
-            triviaGame.isGameOver();
         },
 
         /**
          * Display a question and set of answers in the jumbotron.
          */
         displayQuestion: function() {
+
+            triviaGame.answerChosen = false;
 
             // Starts the visual timer for the player to know how much time is left.
             // triviaGame.startProgressBar();
@@ -121,19 +125,19 @@
             }); 
         },
 
-
         // need to fix case when player does not choose answer
         isGameOver: function() {
+            if (!triviaGame.answerChosen) {
+                $('#incorrect').text(++triviaGame.incorrect);
+            }
             if (triviaGame.questionsUsed.length === triviaGame.questions.length) {
-                clearInterval(intervalID);
-                clearInterval(progressIntervalID);
                 $('.jumbotron').empty();
                 $('.jumbotron').append('<h3>How close to Pokemon Master are you?</h3>');
                 $('.jumbotron').append('<button class="btn btn-secondary" id="reset">Try Again?</button>');
                 $('#reset').on('click', triviaGame.resetGame);
+                clearInterval(intervalID);
             }
         },
-
 
         // On start button press, trivia quiz begins. 
         // Sets interval to time each question.
@@ -141,14 +145,20 @@
             triviaGame.start = $('#start');
             $('#start').remove();
             clearInterval(intervalID);
+            // clearInterval(progressIntervalID);
             triviaGame.displayQuestion();
-            setInterval(triviaGame.displayQuestion, (TIME * 1000));
+            intervalID = setInterval(function() {
+                // Check if the quiz is over.
+                triviaGame.isGameOver(),
+                triviaGame.displayQuestion()
+            }, (TIME * 1000));
         },
-
         
         resetGame: function() {
             $('.jumbotron').empty();
-            $('.jumbotron').append(triviaGame.start);
+            let startButton = $('<button>').addClass('btn btn-secondary').text('Start');
+            startButton.attr('type', 'button').attr('id', 'start');
+            $('.jumbotron').append(startButton);
             $('#start').on('click', triviaGame.startQuiz);
             triviaGame.questionsUsed = [];
             triviaGame.correct = 0;
@@ -156,7 +166,6 @@
             $('#incorrect').text('0');
             $('#correct').text('0');
         },
-
 
         startProgressBar: function() {
             let i = 100;
@@ -169,7 +178,7 @@
                     $('.progress-bar').css('width', '100%');
                 }
             }, 1000);
-        }
+        },
 
     }
 
