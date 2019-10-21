@@ -1,7 +1,7 @@
 # TriviaGame
 
 ### Live Versions of the Game
-* [Trivia Game](mkkiyoi.github.io/TriviaGame)
+* [Trivia Game](https://mkkiyoi.github.io/TriviaGame)
 
 ### How does the game work?
 
